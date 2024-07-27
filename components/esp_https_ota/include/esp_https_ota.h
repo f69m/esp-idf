@@ -72,6 +72,8 @@ typedef struct {
 
 #define ESP_ERR_HTTPS_OTA_BASE            (0x9000)
 #define ESP_ERR_HTTPS_OTA_IN_PROGRESS     (ESP_ERR_HTTPS_OTA_BASE + 1)  /* OTA operation in progress */
+#define ESP_ERR_HTTPS_OTA_NOT_MODIFIED    (ESP_ERR_HTTPS_OTA_BASE + 2)  /* No firmware update available */
+
 
 /**
  * @brief    HTTPS OTA Firmware upgrade.
