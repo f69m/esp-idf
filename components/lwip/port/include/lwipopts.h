@@ -503,6 +503,17 @@ static inline uint32_t timeout_from_offered(uint32_t lease, uint32_t min)
 #define LWIP_DNS_SUPPORT_MDNS_QUERIES   0
 #endif
 
+/**
+ * LWIP_DNS_SETSERVER_WITH_NETIF: If this is turned on, the dns_setserver_with_netif() is enabled and called
+ * from all internal modules (instead of dns_setserver()) allowing to setup a user callback to collect DNS server
+ * information acquired by the related network interface.
+ */
+#ifdef CONFIG_LWIP_DNS_SETSERVER_WITH_NETIF
+#define LWIP_DNS_SETSERVER_WITH_NETIF   1
+#else
+#define LWIP_DNS_SETSERVER_WITH_NETIF   0
+#endif
+
 /*
    ---------------------------------
    ---------- UDP options ----------
@@ -1070,6 +1081,11 @@ static inline uint32_t timeout_from_offered(uint32_t lease, uint32_t min)
 #define PPP_IPV6_SUPPORT                               CONFIG_LWIP_PPP_ENABLE_IPV6
 
 /**
+ * PPP_IPV4_SUPPORT==1: Enable PPP IPv4 support
+ */
+#define PPP_IPV4_SUPPORT                               CONFIG_LWIP_PPP_ENABLE_IPV4
+
+/**
  * PPP_NOTIFY_PHASE==1: Support PPP notify phase.
  */
 #define PPP_NOTIFY_PHASE                CONFIG_LWIP_PPP_NOTIFY_PHASE_SUPPORT
@@ -1139,6 +1155,15 @@ static inline uint32_t timeout_from_offered(uint32_t lease, uint32_t min)
 #else
 #define PPP_SUPPORT                     0
 #endif  /* CONFIG_LWIP_PPP_SUPPORT */
+
+/**
+ * LWIP_USE_EXTERNAL_MBEDTLS: Use external mbed TLS library for crypto implementation used in PPP AUTH
+ */
+#ifdef CONFIG_LWIP_USE_EXTERNAL_MBEDTLS
+#define LWIP_USE_EXTERNAL_MBEDTLS 1
+#else
+#define LWIP_USE_EXTERNAL_MBEDTLS 0
+#endif
 
 /*
    --------------------------------------
@@ -1592,7 +1617,7 @@ static inline uint32_t timeout_from_offered(uint32_t lease, uint32_t min)
 #define ESP_LWIP                        1
 #define ESP_LWIP_ARP                    1
 #define ESP_PER_SOC_TCP_WND             0
-#define ESP_THREAD_SAFE                 1
+#define ESP_THREAD_SAFE                 1       /* Not used (to be removed in v6.x) */
 #define ESP_THREAD_SAFE_DEBUG           LWIP_DBG_OFF
 #define ESP_DHCP                        1
 #define ESP_DNS                         1
@@ -1630,11 +1655,9 @@ static inline uint32_t timeout_from_offered(uint32_t lease, uint32_t min)
 
 
 #if LWIP_NETCONN_SEM_PER_THREAD
-#if ESP_THREAD_SAFE
 #define LWIP_NETCONN_THREAD_SEM_GET() sys_thread_sem_get()
 #define LWIP_NETCONN_THREAD_SEM_ALLOC() sys_thread_sem_init()
 #define LWIP_NETCONN_THREAD_SEM_FREE() sys_thread_sem_deinit()
-#endif
 #endif
 
 /**

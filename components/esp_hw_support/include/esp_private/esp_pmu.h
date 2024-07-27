@@ -62,7 +62,11 @@ typedef enum {
 #define RTC_EXT1_TRIG_EN            0
 #endif
 
-#define RTC_GPIO_TRIG_EN            PMU_GPIO_WAKEUP_EN      //!< GPIO wakeup
+#if SOC_LP_IO_HAS_INDEPENDENT_WAKEUP_SOURCE
+#define RTC_GPIO_TRIG_EN            (PMU_GPIO_WAKEUP_EN | PMU_LP_GPIO_WAKEUP_EN)      //!< GPIO & LP_GPIO wakeup
+#else
+#define RTC_GPIO_TRIG_EN            (PMU_GPIO_WAKEUP_EN)
+#endif
 
 #if SOC_LP_TIMER_SUPPORTED
 #define RTC_TIMER_TRIG_EN           PMU_LP_TIMER_WAKEUP_EN  //!< Timer wakeup
@@ -277,7 +281,7 @@ void pmu_sleep_shutdown_dcdc(void);
  * @brief DCDC has taken over power supply, shut down LDO to save power consumption
  */
 void pmu_sleep_shutdown_ldo(void);
-#endif
+#endif // SOC_DCDC_SUPPORTED
 
 /**
  * @brief Enter deep or light sleep mode
@@ -309,9 +313,10 @@ uint32_t pmu_sleep_start(uint32_t wakeup_opt, uint32_t reject_opt, uint32_t lslp
 
 /**
  * @brief   Finish sleep process settings and get sleep reject status
+ * @param   dslp True if sleep requests id deep-sleep
  * @return  return sleep reject status
  */
-bool pmu_sleep_finish(void);
+bool pmu_sleep_finish(bool dslp);
 
 /**
  * @brief Initialize PMU related power/clock/digital parameters and functions

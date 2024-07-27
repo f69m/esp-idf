@@ -299,14 +299,12 @@ def test_cache_error(dut: PanicTestDut, config: str, test_func_name: str) -> Non
     if dut.target in ['esp32c3', 'esp32c2']:
         dut.expect_gme('Cache error')
         dut.expect_exact('Cached memory region accessed while ibus or cache is disabled')
-    elif dut.target in ['esp32c6', 'esp32h2']:
+    elif dut.target in ['esp32c6', 'esp32h2', 'esp32p4']:
         dut.expect_gme('Cache error')
         dut.expect_exact('Cache access error')
     elif dut.target in ['esp32s2']:
         # Cache error interrupt is not enabled, IDF-1558
         dut.expect_gme('IllegalInstruction')
-    elif dut.target in ['esp32p4']:  # TODO IDF-7515
-        dut.expect_gme('Instruction access fault')
     else:
         dut.expect_gme('Cache disabled but cached memory region accessed')
     dut.expect_reg_dump(0)
@@ -1050,9 +1048,9 @@ def _test_coredump_summary(dut: PanicTestDut, flash_encrypted: bool, coredump_en
     dut.expect_elf_sha256('App ELF file SHA256: ')
     dut.expect_exact('Crashed task: main')
     if dut.is_xtensa:
-        dut.expect_exact('Exception cause: 29')
+        dut.expect_exact('Exception cause: 0')
     else:
-        dut.expect_exact('Exception cause: 7')
+        dut.expect_exact('Exception cause: 2')
     dut.expect(PANIC_ABORT_PREFIX + r'assert failed:[\s\w()]*?\s[.\w/]*\.(?:c|cpp|h|hpp):\d.*$')
 
 

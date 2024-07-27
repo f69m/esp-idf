@@ -7,17 +7,17 @@
 
 {IDF_TARGET_SBV2_SCHEME:default="RSA-PSS", esp32c2="ECDSA", esp32c6="RSA-PSS 或 ECDSA", esp32h2="RSA-PSS 或 ECDSA", esp32p4="RSA-PSS 或 ECDSA", esp32c5="RSA-PSS 或 ECDSA"}
 
-{IDF_TARGET_SBV2_KEY:default="RSA-3072", esp32c2="ECDSA-256 或 ECDSA-192", esp32c6="RSA-3072、ECDSA-256 或 ECDSA-192", esp32h2="RSA-3072、ECDSA-256 或 ECDSA-192", esp32p4="RSA-3072、ECDSA-256 或 ECDSA-192"}
+{IDF_TARGET_SBV2_KEY:default="RSA-3072", esp32c2="ECDSA-256 或 ECDSA-192", esp32c6="RSA-3072、ECDSA-256 或 ECDSA-192", esp32h2="RSA-3072、ECDSA-256 或 ECDSA-192", esp32p4="RSA-3072、ECDSA-256 或 ECDSA-192", esp32c5="RSA-3072、ECDSA-256、或 ECDSA-192"}
 
-{IDF_TARGET_SECURE_BOOT_OPTION_TEXT:default="", esp32c6="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。", esp32h2="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。", esp32p4="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。"}
+{IDF_TARGET_SECURE_BOOT_OPTION_TEXT:default="", esp32c6="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。", esp32h2="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。", esp32p4="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。", esp32c5="推荐使用 RSA，其验证时间更短。可以在菜单中选择 RSA 和 ECDSA 方案。"}
 
 {IDF_TARGET_ECO_VERSION:default="", esp32="（v3.0 及以上版本）", esp32c3="（v3.0 及以上版本）"}
 
-{IDF_TARGET_RSA_TIME:default="", esp32c6="约 2.7 ms", esp32h2="约 4.5 ms"}
+{IDF_TARGET_RSA_TIME:default="", esp32c6="约 2.7 ms", esp32h2="约 4.5 ms", esp32p4="约 2.4 ms"}
 
-{IDF_TARGET_ECDSA_TIME:default="", esp32c6="约 21.5 ms", esp32h2="约 36 ms"}
+{IDF_TARGET_ECDSA_TIME:default="", esp32c6="约 21.5 ms", esp32h2="约 36 ms", esp32p4="约 10.3 ms"}
 
-{IDF_TARGET_CPU_FREQ:default="", esp32c6="160 MHz", esp32h2="96 MHz"}
+{IDF_TARGET_CPU_FREQ:default="", esp32c6="160 MHz", esp32h2="96 MHz", esp32p4="360 MHz"}
 
 {IDF_TARGET_SBV2_DEFAULT_SCHEME:default="RSA", esp32c2="ECDSA (v2)"}
 
@@ -148,7 +148,7 @@
 
         如果需要快速启动，建议使用 RSA；如果需要较短的密钥，建议使用 ECDSA。
 
-        .. only:: not esp32p4
+        .. only:: not esp32p4 or not esp32c5
 
         .. list-table:: 签名验证耗时比较
             :widths: 10 10 20

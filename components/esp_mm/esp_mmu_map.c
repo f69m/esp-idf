@@ -14,6 +14,7 @@
 #include "esp_log.h"
 #include "esp_check.h"
 #include "esp_heap_caps.h"
+#include "esp_compiler.h"
 
 #include "soc/soc_caps.h"
 #include "hal/cache_types.h"
@@ -509,7 +510,15 @@ esp_err_t esp_mmu_map(esp_paddr_t paddr_start, size_t size, mmu_target_t target,
 
     if (is_enclosed) {
         ESP_LOGW(TAG, "paddr block is mapped already, vaddr_start: %p, size: 0x%x", (void *)mem_block->vaddr_start, mem_block->size);
-        *out_ptr = (void *)mem_block->vaddr_start;
+        /*
+         * This condition is triggered when `s_is_enclosed` is true and hence
+         * we are sure that `paddr_start` >= `mem_block->paddr_start`.
+         *
+         * Add the offset of new physical address while returning the virtual
+         * address.
+         */
+        const uint32_t new_paddr_offset = paddr_start - mem_block->paddr_start;
+        *out_ptr = (void *)mem_block->vaddr_start + new_paddr_offset;
         return ESP_ERR_INVALID_STATE;
     }
 
@@ -630,9 +639,11 @@ esp_err_t esp_mmu_unmap(void *ptr)
     size_t slot_len = 0;
 
     for (int i = 0; i < s_mmu_ctx.num_regions; i++) {
+        ESP_COMPILER_DIAGNOSTIC_PUSH_IGNORE("-Wanalyzer-out-of-bounds")
         if (ptr_laddr >= s_mmu_ctx.mem_regions[i].free_head && ptr_laddr < s_mmu_ctx.mem_regions[i].end) {
             region = &s_mmu_ctx.mem_regions[i];
         }
+        ESP_COMPILER_DIAGNOSTIC_POP("-Wanalyzer-out-of-bounds")
     }
     ESP_RETURN_ON_FALSE(region, ESP_ERR_NOT_FOUND, TAG, "munmap target pointer is outside external memory regions");
 

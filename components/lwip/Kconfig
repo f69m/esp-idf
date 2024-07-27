@@ -135,13 +135,19 @@ menu "LWIP"
 
     config LWIP_MAX_SOCKETS
         int "Max number of open sockets"
-        range 1 16
+        range 1 253
         default 10
         help
+            The practical maximum limit is
+            determined by available heap memory at runtime.
+
             Sockets take up a certain amount of memory, and allowing fewer
             sockets to be open at the same time conserves memory. Specify
             the maximum amount of sockets here. The valid value is from 1
-            to 16.
+            to 253. If using value above 61, update CMakeLists defining
+            FD_SETSIZE to the number of sockets used plus the
+            expected open files (minimum of +3 for stdout, stderr and stdin).
+
 
     config LWIP_USE_ONLY_LWIP_SELECT
         bool "Support LWIP socket select() only (DEPRECATED)"
@@ -876,24 +882,6 @@ menu "LWIP"
         default 0x0 if LWIP_TCPIP_TASK_AFFINITY_CPU0
         default 0x1 if LWIP_TCPIP_TASK_AFFINITY_CPU1
 
-
-    menuconfig LWIP_PPP_SUPPORT
-        bool "Enable PPP support"
-        default n
-        help
-            Enable PPP stack. Now only PPP over serial is possible.
-
-    config LWIP_PPP_ENABLE_IPV6
-        bool "Enable IPV6 support for PPP connections (IPV6CP)"
-        depends on LWIP_PPP_SUPPORT && LWIP_IPV6
-        default y
-        help
-            Enable IPV6 support in PPP for the local link between the DTE (processor) and DCE (modem).
-            There are some modems which do not support the IPV6 addressing in the local link.
-            If they are requested for IPV6CP negotiation, they may time out.
-            This would in turn fail the configuration for the whole link.
-            If your modem is not responding correctly to PPP Phase Network, try to disable IPV6 support.
-
     config LWIP_IPV6_MEMP_NUM_ND6_QUEUE
         int "Max number of IPv6 packets to queue during MAC resolution"
         depends on LWIP_IPV6
@@ -909,6 +897,32 @@ menu "LWIP"
         default 5
         help
             Config max number of entries in IPv6 neighbor cache
+
+    menuconfig LWIP_PPP_SUPPORT
+        bool "Enable PPP support"
+        default n
+        help
+            Enable PPP stack. Now only PPP over serial is possible.
+
+    config LWIP_PPP_ENABLE_IPV4
+        bool "Enable IPV4 support for PPP connections (IPCP)"
+        depends on LWIP_PPP_SUPPORT && LWIP_IPV4
+        default y
+        help
+            Enable IPCP protocol in PPP negotiations, which assigns IPv4 addresses to the PPP client,
+            as well as IPv4 DNS servers.
+            You can disable this if your modem supports IPv6 only.
+
+    config LWIP_PPP_ENABLE_IPV6
+        bool "Enable IPV6 support for PPP connections (IPV6CP)"
+        depends on LWIP_PPP_SUPPORT && LWIP_IPV6
+        default y
+        help
+            Enable IPV6 support in PPP for the local link between the DTE (processor) and DCE (modem).
+            There are some modems which do not support the IPV6 addressing in the local link.
+            If they are requested for IPV6CP negotiation, they may time out.
+            This would in turn fail the configuration for the whole link.
+            If your modem is not responding correctly to PPP Phase Network, try to disable IPV6 support.
 
     config LWIP_PPP_NOTIFY_PHASE_SUPPORT
         bool "Enable Notify Phase Callback"
@@ -991,6 +1005,17 @@ menu "LWIP"
         default n
         help
             Enable PPP debug log output
+
+    config LWIP_USE_EXTERNAL_MBEDTLS
+        bool "Use mbedTLS instead of internal polarSSL"
+        depends on LWIP_PPP_SUPPORT
+        depends on !LWIP_PPP_MPPE_SUPPORT && !LWIP_PPP_MSCHAP_SUPPORT
+        default n
+        help
+            This option uses mbedTLS crypto functions (instead of internal PolarSSL
+            implementation) for PPP authentication modes (PAP, CHAP, etc.).
+            You can use this option to address symbol duplication issues, since
+            the internal functions are not namespaced (e.g. md5_init()).
 
     menuconfig LWIP_SLIP_SUPPORT
         bool "Enable SLIP support (new/experimental)"
@@ -1129,6 +1154,15 @@ menu "LWIP"
             depends on LWIP_FALLBACK_DNS_SERVER_SUPPORT
             help
                 This option allows you to config dns fallback server address.
+
+        config LWIP_DNS_SETSERVER_WITH_NETIF
+            bool "Enable DNS server settings with netif"
+            default n
+            help
+                This option allows collecting DNS server settings per netif using
+                configurable callback function.
+                It's typically used with CONFIG_ESP_NETIF_SET_DNS_PER_DEFAULT_NETIF
+                which configures a callback to collect the DNS info on esp_netif layer.
 
     endmenu # DNS
 

@@ -189,11 +189,11 @@ config SOC_ECC_EXTENDED_MODES_SUPPORTED
 
 config SOC_ECDSA_SUPPORTED
     bool
-    default y
+    default n
 
 config SOC_KEY_MANAGER_SUPPORTED
     bool
-    default y
+    default n
 
 config SOC_FLASH_ENC_SUPPORTED
     bool
@@ -240,6 +240,10 @@ config SOC_LP_PERIPHERALS_SUPPORTED
     default y
 
 config SOC_LP_I2C_SUPPORTED
+    bool
+    default y
+
+config SOC_LP_SPI_SUPPORTED
     bool
     default y
 
@@ -595,6 +599,10 @@ config SOC_GPIO_SUPPORT_DEEPSLEEP_WAKEUP
     bool
     default y
 
+config SOC_LP_IO_HAS_INDEPENDENT_WAKEUP_SOURCE
+    bool
+    default y
+
 config SOC_GPIO_VALID_GPIO_MASK
     hex
     default 0x007FFFFFFFFFFFFF
@@ -610,6 +618,10 @@ config SOC_GPIO_OUT_RANGE_MAX
 config SOC_GPIO_DEEP_SLEEP_WAKE_VALID_GPIO_MASK
     int
     default 0
+
+config SOC_GPIO_DEEP_SLEEP_WAKE_SUPPORTED_PIN_CNT
+    int
+    default 16
 
 config SOC_GPIO_VALID_DIGITAL_IO_PAD_MASK
     hex
@@ -1095,7 +1107,19 @@ config SOC_PARLIO_RX_UNIT_MAX_DATA_WIDTH
     int
     default 16
 
+config SOC_PARLIO_TX_CLK_SUPPORT_GATING
+    bool
+    default y
+
+config SOC_PARLIO_RX_CLK_SUPPORT_GATING
+    bool
+    default y
+
 config SOC_PARLIO_RX_CLK_SUPPORT_OUTPUT
+    bool
+    default y
+
+config SOC_PARLIO_TRANS_BIT_ALIGN
     bool
     default y
 
@@ -1267,6 +1291,18 @@ config SOC_SPI_MAX_PRE_DIVIDER
     int
     default 16
 
+config SOC_LP_SPI_PERIPH_NUM
+    bool
+    default y
+
+config SOC_LP_SPI_MAXIMUM_BUFFER_SIZE
+    int
+    default 64
+
+config SOC_SPIRAM_XIP_SUPPORTED
+    bool
+    default y
+
 config SOC_SPI_MEM_SUPPORT_AUTO_WAIT_IDLE
     bool
     default y
@@ -1396,6 +1432,10 @@ config SOC_TIMER_SUPPORT_SLEEP_RETENTION
     default y
 
 config SOC_MWDT_SUPPORT_XTAL
+    bool
+    default y
+
+config SOC_MWDT_SUPPORT_SLEEP_RETENTION
     bool
     default y
 
@@ -1627,6 +1667,10 @@ config SOC_PM_SUPPORT_CNNT_PD
     bool
     default y
 
+config SOC_PM_SUPPORT_RTC_PERIPH_PD
+    bool
+    default y
+
 config SOC_PM_SUPPORT_DEEPSLEEP_CHECK_STUB_ONLY
     bool
     default y
@@ -1742,3 +1786,7 @@ config SOC_LCDCAM_CAM_PERIPH_NUM
 config SOC_LCDCAM_CAM_DATA_WIDTH_MAX
     int
     default 16
+
+config SOC_LP_CORE_SUPPORT_ETM
+    bool
+    default y

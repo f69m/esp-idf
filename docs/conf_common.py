@@ -56,7 +56,8 @@ CLASSIC_BT_DOCS = ['api-reference/bluetooth/classic_bt.rst',
 BLUFI_DOCS = ['api-guides/blufi.rst',
               'api-reference/bluetooth/esp_blufi.rst']
 
-WIFI_DOCS = ['api-guides/wifi.rst',
+WIFI_DOCS = ['api-guides/low-power-mode/low-power-mode-wifi.rst',
+             'api-guides/wifi.rst',
              'api-guides/wifi-security.rst',
              'api-guides/wireshark-user-guide.rst',
              'api-reference/network/esp_now.rst',
@@ -117,7 +118,8 @@ USB_DOCS = ['api-reference/peripherals/usb_device.rst',
             'api-reference/peripherals/usb_host/usb_host_notes_dwc_otg.rst',
             'api-reference/peripherals/usb_host/usb_host_notes_index.rst',
             'api-reference/peripherals/usb_host/usb_host_notes_usbh.rst',
-            'api-reference/peripherals/usb_host/usb_host_notes_enum.rst']
+            'api-reference/peripherals/usb_host/usb_host_notes_enum.rst',
+            'api-reference/peripherals/usb_host/usb_host_notes_ext_hub.rst']
 
 I80_LCD_DOCS = ['api-reference/peripherals/lcd/i80_lcd.rst']
 RGB_LCD_DOCS = ['api-reference/peripherals/lcd/rgb_lcd.rst']

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2015-2021 Espressif Systems (Shanghai) CO LTD
+ * SPDX-FileCopyrightText: 2015-2024 Espressif Systems (Shanghai) CO LTD
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -104,6 +104,8 @@ static esp_transport_handle_t ws_get_payload_transport_handle(esp_transport_hand
 
 static int esp_transport_read_internal(transport_ws_t *ws, char *buffer, int len, int timeout_ms)
 {
+    ESP_STATIC_ANALYZER_CHECK(buffer == NULL, 0);
+
     // No buffered data to read from, directly attempt to read from the transport.
     if (ws->buffer_len == 0) {
         return esp_transport_read(ws->parent, buffer, len, timeout_ms);
@@ -698,7 +700,7 @@ static int ws_get_socket(esp_transport_handle_t t)
 
 esp_transport_handle_t esp_transport_ws_init(esp_transport_handle_t parent_handle)
 {
-    if (parent_handle == NULL || parent_handle->foundation == NULL) {
+    if (parent_handle == NULL) {
       ESP_LOGE(TAG, "Invalid parent ptotocol");
       return NULL;
     }

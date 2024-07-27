@@ -75,6 +75,7 @@ static void on_ppp_status_changed(ppp_pcb *pcb, int err_code, void *ctx)
             break;
         case PPPERR_CONNECT: /* Connection lost */
             ESP_LOGI(TAG, "Connection lost");
+            esp_netif_update_default_netif(netif, ESP_NETIF_LOST_IP);
             err = esp_event_post(IP_EVENT, netif->lost_ip_event, &evt, sizeof(evt), 0);
 
             if (ESP_OK != err) {
@@ -230,7 +231,9 @@ netif_related_data_t * esp_netif_new_ppp(esp_netif_t *esp_netif, const esp_netif
 #if PPP_NOTIFY_PHASE
     ppp_set_notify_phase_callback(ppp_obj->ppp, on_ppp_notify_phase);
 #endif
+#if PPP_IPV4_SUPPORT
     ppp_set_usepeerdns(ppp_obj->ppp, 1);
+#endif
 
     return (netif_related_data_t *)ppp_obj;
 }
@@ -266,6 +269,10 @@ esp_err_t esp_netif_start_ppp(esp_netif_t *esp_netif)
         ppp_ctx->ppp->ipcp_wantoptions.accept_local = 1;
     }
 #endif // CONFIG_LWIP_PPP_SERVER_SUPPORT
+
+#if ESP_IPV6_AUTOCONFIG
+    ppp_ctx->ppp->netif->ip6_autoconfig_enabled = (esp_netif->flags & ESP_NETIF_FLAG_IPV6_AUTOCONFIG_ENABLED) ? 1 : 0;
+#endif
 
     ESP_LOGD(TAG, "%s: Starting PPP connection: %p", __func__, ppp_ctx->ppp);
 #ifdef CONFIG_LWIP_PPP_SERVER_SUPPORT
